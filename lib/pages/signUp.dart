@@ -1,11 +1,11 @@
 import 'dart:io';
 // import 'package:permission_handler/permission_handler.dart'; // Import permission_handler
+import 'package:emergencyapp/pages/signIn.dart';
 import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 
 class SignUpPage extends StatelessWidget {
-  const SignUpPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     // Get screen width and height
@@ -13,30 +13,28 @@ class SignUpPage extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white, // Set background color of the screen to white
+      backgroundColor:
+      Colors.white, // Set background color of the screen to white
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Center the widgets vertically
+        mainAxisAlignment:
+        MainAxisAlignment.center, // Center the widgets vertically
         children: [
           // 'Medical Professional' button
           SizedBox(
             width: screenWidth, // Set width to full screen width
-            height: (screenHeight / 2) - 40, // Set height to half of screen height minus padding
+            height: (screenHeight / 2) -
+                40, // Set height to half of screen height minus padding
             child: ElevatedButton(
               onPressed: () {
                 // Navigate to the next page with 'Medical Professional' role
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SignUpFormPage(role: 'Medical Professional'),
+                    builder: (context) =>
+                        SignUpFormPage(role: 'Medical Professional'),
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Set background color to blue
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero, // Remove border radius for square corners
-                ),
-              ),
               child: Text(
                 'Medical\nProfessional', // Adds a line break between 'Medical' and 'Professional'
                 textAlign: TextAlign.center, // Center the text horizontally
@@ -46,11 +44,18 @@ class SignUpPage extends StatelessWidget {
                   fontWeight: FontWeight.bold, // Make the text bold
                 ),
               ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Set background color to blue
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius
+                      .zero, // Remove border radius for square corners
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 20), // Space between buttons and text
+          SizedBox(height: 20), // Space between buttons and text
           // Centered text 'Select Your Role'
-          const Text(
+          Text(
             'Select Your Role',
             style: TextStyle(
               color: Colors.blue, // Text color
@@ -58,11 +63,12 @@ class SignUpPage extends StatelessWidget {
               fontWeight: FontWeight.bold, // Bold text
             ),
           ),
-          const SizedBox(height: 20), // Space between text and 'User' button
+          SizedBox(height: 20), // Space between text and 'User' button
           // 'User' button
           SizedBox(
             width: screenWidth, // Set width to full screen width
-            height: (screenHeight / 2) - 40, // Set height to half of screen height minus padding
+            height: (screenHeight / 2) -
+                40, // Set height to half of screen height minus padding
             child: ElevatedButton(
               onPressed: () {
                 // Navigate to the next page with 'User' role
@@ -73,12 +79,6 @@ class SignUpPage extends StatelessWidget {
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Set background color to green
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero, // Remove border radius for square corners
-                ),
-              ),
               child: Text(
                 'User',
                 textAlign: TextAlign.center, // Center the text horizontally
@@ -86,6 +86,13 @@ class SignUpPage extends StatelessWidget {
                   color: Colors.white, // Set text color to white
                   fontSize: 60, // Set font size
                   fontWeight: FontWeight.bold, // Make the text bold
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Set background color to green
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius
+                      .zero, // Remove border radius for square corners
                 ),
               ),
             ),
@@ -100,7 +107,7 @@ class SignUpFormPage extends StatefulWidget {
   final String role;
 
   // Constructor to accept role as a parameter
-  const SignUpFormPage({super.key, required this.role});
+  SignUpFormPage({required this.role});
 
   @override
   _SignUpFormPageState createState() => _SignUpFormPageState();
@@ -108,45 +115,28 @@ class SignUpFormPage extends StatefulWidget {
 
 class _SignUpFormPageState extends State<SignUpFormPage> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _last_nameController = TextEditingController();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _specialtyController = TextEditingController();
   final TextEditingController _experienceController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  // For picking the license verification image
-  // final ImagePicker _picker = ImagePicker();
-  // XFile? _licenseImage;
-  //
-  // // Function to pick license verification image
-  // Future<void> _pickLicenseImage() async {
-  //   // Request storage permission
-  //   PermissionStatus permission = await Permission.storage.request();
-  //
-  //   if (permission.isGranted) {
-  //     final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  //     if (pickedFile != null) {
-  //       setState(() {
-  //         _licenseImage = pickedFile;
-  //       });
-  //     }
-  //   } else {
-  //     // Show an error message if permission is not granted
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Permission denied. Cannot pick image.')),
-  //     );
-  //   }
-  // }
+  PlatformFile? _verificationFile;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // Set the background color of the screen to blue
-      appBar: AppBar(title: Text('Sign Up - ${widget.role}'),titleTextStyle: const TextStyle(
-        color: Colors.white, // Change the text color of the AppBar title
-        fontSize: 24, // Font size
-        fontWeight: FontWeight.bold, // Font weight
-      ), backgroundColor: Colors.blue),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Up - ${widget.role}'),
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+        backgroundColor: Colors.blue,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -157,38 +147,60 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                 // Common fields for both User and Medical Professional
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                    fillColor: Colors.white, // White background for the text field
-                    filled: true, // Make the background color filled
+                  decoration: InputDecoration(
+                    labelText: 'First Name',
+                    labelStyle: TextStyle(color: Colors.blue),
+                    fillColor: Colors.white,
+                    filled: true,
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.blue), // Blue text color
+                  style: TextStyle(color: Colors.blue),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return 'Please enter your first name';
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                    fillColor: Colors.white, // White background for the text field
-                    filled: true, // Make the background color filled
+                  controller: _last_nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Last Name',
+                    labelStyle: TextStyle(color: Colors.blue),
+                    fillColor: Colors.white,
+                    filled: true,
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.blue), // Blue text color
+                  style: TextStyle(color: Colors.blue),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your last name';
+                    }
+                    return null;
+                  },
+                ),
+
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: Colors.blue),
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                  ),
+                  style: TextStyle(color: Colors.blue),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
@@ -199,20 +211,20 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextFormField(
                   controller: _phoneController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Phone Number',
-                    labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                    fillColor: Colors.white, // White background for the text field
-                    filled: true, // Make the background color filled
+                    labelStyle: TextStyle(color: Colors.blue),
+                    fillColor: Colors.white,
+                    filled: true,
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.blue), // Blue text color
+                  style: TextStyle(color: Colors.blue),
                   keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -221,21 +233,21 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Password',
-                    labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                    fillColor: Colors.white, // White background for the text field
-                    filled: true, // Make the background color filled
+                    labelStyle: TextStyle(color: Colors.blue),
+                    fillColor: Colors.white,
+                    filled: true,
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.blue), // Blue text color
+                  style: TextStyle(color: Colors.blue),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
@@ -246,23 +258,23 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
 
                 // Medical Professional specific fields
                 if (widget.role == 'Medical Professional') ...[
                   TextFormField(
                     controller: _specialtyController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Medical Specialty',
-                      labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                      fillColor: Colors.white, // White background for the text field
-                      filled: true, // Make the background color filled
+                      labelStyle: TextStyle(color: Colors.blue),
+                      fillColor: Colors.white,
+                      filled: true,
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
                     ),
-                    style: const TextStyle(color: Colors.blue), // Blue text color
+                    style: TextStyle(color: Colors.blue),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your medical specialty';
@@ -270,20 +282,20 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   TextFormField(
                     controller: _experienceController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Years of Experience',
-                      labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                      fillColor: Colors.white, // White background for the text field
-                      filled: true, // Make the background color filled
+                      labelStyle: TextStyle(color: Colors.blue),
+                      fillColor: Colors.white,
+                      filled: true,
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
                     ),
-                    style: const TextStyle(color: Colors.blue), // Blue text color
+                    style: TextStyle(color: Colors.blue),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -295,47 +307,172 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 20),
-                  // Button for picking license image
-                  // ElevatedButton(
-                  //   onPressed: _pickLicenseImage,
-                  //   child: Text('Pick License Image'),
-                  //   style: ElevatedButton.styleFrom(
-                  //     backgroundColor: Colors.white, // Set background color to white
-                  //   ),
-                  // ),
-                  // if (_licenseImage != null)
-                  //   Padding(
-                  //     padding: const EdgeInsets.symmetric(vertical: 20),
-                  //     child: Column(
-                  //       children: [
-                  //         Image.file(File(_licenseImage!.path)),
-                  //         Text('Picked image: ${_licenseImage!.path}'),
-                  //       ],
-                  //     ),
-                  //   ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      FilePickerResult? result = await FilePicker.platform.pickFiles();
+                      if (result != null) {
+                        setState(() {
+                          _verificationFile = result.files.first;
+                        });
+                      }
+                    },
+                    child: Text('Upload Verification Document'),
+                  ),
+                  if (_verificationFile != null)
+                    Text('Selected File: ${_verificationFile!.name}'),
                 ],
+                SizedBox(height: 20),
+
 
                 // Submit button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState?.validate() ?? false) {
-                      // Handle successful form submission
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data...')),
+                        SnackBar(content: Text('Processing Data...')),
                       );
+
+                      try {
+                        final response =
+                        await Supabase.instance.client.auth.signUp(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
+
+                        if (response.user != null) {
+// Sign up successful
+                          final userId = response.user!.id;
+
+// Prepare common user data
+                          final userData = {
+                            'first_name': _nameController.text,
+                            'last_name': _last_nameController.text,
+                            'email': _emailController.text,
+                            'phone_num': _phoneController.text,
+                          };
+
+                          String? fileUrl;
+                          if (_verificationFile != null) {
+                            try {
+                              final uploadPath = 'documents/${_verificationFile!.name}';
+
+                              // Upload the file
+                              await Supabase.instance.client.storage
+                                  .from('verifications')
+                                  .upload(uploadPath, File(_verificationFile!.path!));
+
+                              // Get the public URL of the uploaded file
+                              fileUrl = Supabase.instance.client.storage
+                                  .from('verifications')
+                                  .getPublicUrl(uploadPath);
+
+                            } catch (e) {
+                              throw Exception('File upload failed: $e');
+                            }
+                          }
+
+                          if (widget.role == 'Medical Professional') {
+// Add doctor-specific data
+                            final doctorData = {
+                              'speciality': _specialtyController.text,
+                              'experience': _experienceController.text,
+                              'verification': fileUrl, // Include file URL
+
+                            };
+
+// Insert into 'doctor' table
+                            final insertResponse = await Supabase
+                                .instance.client
+                                .from('doctor')
+                                .insert([
+                              {
+                                'doctor_id': userId,
+                                'first_name': userData['first_name'],
+                                'last_name': userData['last_name'],
+                                'email': userData['email'],
+                                'phone_no': userData['phone_num'],
+                                'password': _passwordController.text,
+                                ...doctorData,
+                              }
+                            ]);
+
+                            if (insertResponse.error != null) {
+                              throw Exception(insertResponse.error.message);
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Sign Up Successful')),
+                            );
+                            Navigator.pop(context);
+                          } else {
+                            // Insert into 'user' table
+                            final insertResponse = await Supabase
+                                .instance.client
+                                .from('user')
+                                .insert([
+                              {
+                                'user_id': userId,
+                                ...userData,
+                                'password': _passwordController.text,
+                              }
+                            ]);
+
+                            if (insertResponse.error != null) {
+                              throw Exception(insertResponse.error.message);
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Sign Up Successful'),
+                                backgroundColor: Colors.green,
+
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        } else {
+                          throw Exception('User not created successfully');
+                        }
+                      } catch (e) {
+                        if (e.toString().contains("NoSuchMethodError:")) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Sign Up Successful'),
+                                backgroundColor: Colors.green
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}'),
+                              backgroundColor: Colors.red,
+
+                            ),
+                          );
+                        }
+                      }
                     }
                   },
+                  child: Text('Sign Up'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Set background color to white
-                  ),
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      color: Colors.white, // Set text color to white
-                    ),
-                  ),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white),
                 ),
+                SizedBox(height: 20),
+
+                ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SignInPage()), // Fixed navigation
+                      );
+                    },
+                    child: Text('Sign In'),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white))
               ],
             ),
           ),
@@ -344,3 +481,4 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
     );
   }
 }
+

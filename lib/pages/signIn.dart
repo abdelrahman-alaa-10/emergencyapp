@@ -1,23 +1,23 @@
+import 'package:emergencyapp/pages/user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'pages/user_page.dart';  // Correct import for SignInPage
 
 class SignInPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  SignInPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // AppBar with blue background and white title text
       appBar: AppBar(
-        title: const Text('Sign In'),
-        backgroundColor: Colors.blue, // Blue background
-        titleTextStyle: const TextStyle(
-          color: Colors.white, // White text
-          fontSize: 24, // Font size
-          fontWeight: FontWeight.bold, // Bold text
+        title: Text('Sign In'),
+        backgroundColor: Colors.blue,
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
         ),
       ),
       body: Padding(
@@ -26,19 +26,18 @@ class SignInPage extends StatelessWidget {
           key: _formKey,
           child: Column(
             children: [
-              // Email input field with blue label and border
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Email',
-                  labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                  fillColor: Colors.white, // White background for input field
-                  filled: true, // Make the background filled
+                  labelStyle: TextStyle(color: Colors.blue),
+                  fillColor: Colors.white,
+                  filled: true,
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue), // Blue border
+                    borderSide: BorderSide(color: Colors.blue),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue), // Focused blue border
+                    borderSide: BorderSide(color: Colors.blue),
                   ),
                 ),
                 validator: (value) {
@@ -51,21 +50,20 @@ class SignInPage extends StatelessWidget {
                   return null;
                 },
               ),
-              const SizedBox(height: 20),
-              // Password input field with blue label and border
+              SizedBox(height: 20),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle: TextStyle(color: Colors.blue), // Blue label text
-                  fillColor: Colors.white, // White background for input field
-                  filled: true, // Make the background filled
+                  labelStyle: TextStyle(color: Colors.blue),
+                  fillColor: Colors.white,
+                  filled: true,
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue), // Blue border
+                    borderSide: BorderSide(color: Colors.blue),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue), // Focused blue border
+                    borderSide: BorderSide(color: Colors.blue),
                   ),
                 ),
                 validator: (value) {
@@ -75,24 +73,64 @@ class SignInPage extends StatelessWidget {
                   return null;
                 },
               ),
-              const SizedBox(height: 20),
-              // Sign In button with blue background and white text
+              SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Sign In Successful'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                    final email = _emailController.text.trim();
+                    final password = _passwordController.text;
+
+                    try {
+                      // Fetch user data from the 'user' table
+                      final response = await Supabase.instance.client
+                          .from('user')
+                          .select('first_name, last_name, email, password')
+                          .eq('email', email)
+                          .eq('password', password)
+                          .maybeSingle();
+
+                      if (response != null) {
+                        final firstName = response['first_name'] as String;
+                        final lastName = response['last_name'] as String;
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Sign In Successful'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+
+                        // Pass first and last name to UserPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                UserPage(userName: '$firstName $lastName'),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Invalid email or password'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('An error occurred. Please try again later.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Blue background for button
-                  foregroundColor: Colors.white, // White text color
-                ),
                 child: Text('Sign In'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ],
           ),
