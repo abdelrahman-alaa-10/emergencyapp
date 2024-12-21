@@ -2,30 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class DoctorPage extends StatefulWidget 
-{
-  const DoctorPage({super.key});
-  
+class DoctorPage extends StatefulWidget {
+  final String doctorName;
+  final String specialty;
+
+  const DoctorPage({Key? key, required this.doctorName, required this.specialty})
+      : super(key: key);
+
   @override
   State<DoctorPage> createState() => _DoctorPageState();
 }
 
 class _DoctorPageState extends State<DoctorPage> {
-  final String doctorName = 'Dr. John Doe';
-  final String specialty = 'Cardiologist';
   List<String> incomingCalls = [
     'Patient 1 - Heart Attack',
     'Patient 2 - Stroke',
     'Patient 3 - Choking'
   ];
-
-  File? _pickedImage; // To store the uploaded image
-
-  void addIncomingCall(String call) {
-    setState(() {
-      incomingCalls.add(call);
-    });
-  }
+  File? _pickedImage;
 
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -40,9 +34,13 @@ class _DoctorPageState extends State<DoctorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Doctor Dashboard'),
+        backgroundColor: Colors.blue,
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -60,14 +58,16 @@ class _DoctorPageState extends State<DoctorPage> {
               ),
               SizedBox(height: 20),
               Text(
-                doctorName,
+                "DR. ${widget.doctorName}",
                 style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
+
               Text(
-                specialty,
+                widget.specialty,
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
               SizedBox(height: 30),
@@ -79,7 +79,15 @@ class _DoctorPageState extends State<DoctorPage> {
                     color: Colors.blueAccent),
               ),
               SizedBox(height: 10),
-              ListView.builder(
+              incomingCalls.isEmpty
+                  ? Text(
+                'No incoming calls at the moment',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey),
+              )
+                  : ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: incomingCalls.length,
@@ -88,7 +96,8 @@ class _DoctorPageState extends State<DoctorPage> {
                     elevation: 3,
                     margin: EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
-                      leading: Icon(Icons.phone_in_talk, color: Colors.green),
+                      leading:
+                      Icon(Icons.phone_in_talk, color: Colors.green),
                       title: Text(
                         incomingCalls[index],
                         style: TextStyle(
@@ -98,8 +107,8 @@ class _DoctorPageState extends State<DoctorPage> {
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content:
-                                  Text('Responding to ${incomingCalls[index]}'),
+                              content: Text(
+                                  'Responding to ${incomingCalls[index]}'),
                             ),
                           );
                         },
@@ -110,7 +119,7 @@ class _DoctorPageState extends State<DoctorPage> {
                           ),
                         ),
                         child: Text('Respond',
-                            style: TextStyle(color: Colors.black)),
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   );
