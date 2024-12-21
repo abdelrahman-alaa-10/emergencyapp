@@ -1,6 +1,6 @@
 # emergencyapp
 
-A new Flutter project.
+An application aims to aid people in emergency situations by connecting them to medics via a video call
 
 ## Getting Started
 
