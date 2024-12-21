@@ -4,6 +4,7 @@ import 'package:emergencyapp/pages/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class SignUpPage extends StatelessWidget {
   @override
@@ -357,12 +358,18 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                             try {
                               final uploadPath = 'documents/${_verificationFile!.name}';
 
-                              // Upload the file
-                              await Supabase.instance.client.storage
-                                  .from('verifications')
-                                  .upload(uploadPath, File(_verificationFile!.path!));
+                              if (kIsWeb) {
+                                // For web, use bytes
+                                await Supabase.instance.client.storage
+                                    .from('verifications')
+                                    .uploadBinary(uploadPath, _verificationFile!.bytes!);
+                              } else {
+                                // For mobile, use File
+                                await Supabase.instance.client.storage
+                                    .from('verifications')
+                                    .upload(uploadPath, File(_verificationFile!.path!));
+                              }
 
-                              // Get the public URL of the uploaded file
                               fileUrl = Supabase.instance.client.storage
                                   .from('verifications')
                                   .getPublicUrl(uploadPath);
@@ -371,6 +378,24 @@ class _SignUpFormPageState extends State<SignUpFormPage> {
                               throw Exception('File upload failed: $e');
                             }
                           }
+                          // if (_verificationFile != null) {
+                          //   try {
+                          //     final uploadPath = 'documents/${_verificationFile!.name}';
+                          //
+                          //     // Upload the file
+                          //     await Supabase.instance.client.storage
+                          //         .from('verifications')
+                          //         .upload(uploadPath, File(_verificationFile!.path!));
+                          //
+                          //     // Get the public URL of the uploaded file
+                          //     fileUrl = Supabase.instance.client.storage
+                          //         .from('verifications')
+                          //         .getPublicUrl(uploadPath);
+                          //
+                          //   } catch (e) {
+                          //     throw Exception('File upload failed: $e');
+                          //   }
+                          // }
 
                           if (widget.role == 'Medical Professional') {
 // Add doctor-specific data
