@@ -16,7 +16,7 @@ class IndexState extends State<IndexPage>
 {
   final channelController = TextEditingController();
   bool validateError = false;
-  ClientRoleType? clientRole = ClientRoleType.clientRoleBroadcaster;
+  final ClientRoleType clientRole = ClientRoleType.clientRoleBroadcaster;
   
   @override
   void dispose()
@@ -51,27 +51,28 @@ class IndexState extends State<IndexPage>
                   hintText: 'Channel Name',
                 ),
               ),
-              RadioListTile(
-                title: const Text("broadcaster"),
-                onChanged: (ClientRoleType? value)
-                {
-                  setState(() {
-                    clientRole = value;
-                  });
-                },
-                value: ClientRoleType.clientRoleBroadcaster,
-                groupValue: clientRole,
-              ),
-              RadioListTile(
-                title: const Text('Audience'),
-                onChanged: (ClientRoleType? value){
-                  setState(() {
-                    clientRole = value; 
-                  });
-                },
-                value: ClientRoleType.clientRoleAudience,
-                groupValue: clientRole,
-              ),
+              // RadioListTile(
+              //   title: const Text("broadcaster"),
+              //   onChanged: (ClientRoleType? value)
+              //   {
+              //     setState(() {
+              //       clientRole = value;
+              //     });
+              //   },
+              //   value: ClientRoleType.clientRoleBroadcaster,
+              //   groupValue: clientRole,
+              // ),
+              // RadioListTile(
+              //   title: const Text('Audience'),
+              //   onChanged: (ClientRoleType? value){
+              //     setState(() {
+              //       clientRole = value; 
+              //     });
+              //   },
+              //   value: ClientRoleType.clientRoleAudience,
+              //   groupValue: clientRole,
+              // ),
+              const SizedBox(height: 20,),
               ElevatedButton(
                 onPressed: onJoin,
                 style: ElevatedButton.styleFrom(

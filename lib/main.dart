@@ -3,6 +3,7 @@ import 'pages/signIn.dart';  // Correct import for SignInPage
 import 'pages/signUp.dart';  // Correct import for SignUpPage 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'pages/videocallindex.dart';
+import 'pages/videocallwidget.dart';
 
 class DirectorPage extends StatelessWidget 
 {
@@ -107,7 +108,7 @@ class DirectorPage extends StatelessWidget
                       // Navigate to Emergency page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => IndexPage()), // Fixed navigation
+                        MaterialPageRoute(builder: (context) => VideoCallWidget()), // Fixed navigation
                       );
                     },
                     style: ElevatedButton.styleFrom(
