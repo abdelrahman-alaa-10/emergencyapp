@@ -17,13 +17,13 @@ final logger = Logger(
 
 class VideoCallWidget extends StatefulWidget 
 {
-  final ClientRoleType? clientRole;
+  static const ClientRoleType clientRole = ClientRoleType.clientRoleBroadcaster;
   final String? channelName;
   
-  const VideoCallWidget({
-    super.key,
-    this.channelName,
-    this.clientRole,
+  const VideoCallWidget(
+    {
+      super.key,
+      this.channelName,
     });
   
   @override
@@ -57,11 +57,11 @@ class VideoCallState extends State<VideoCallWidget>
       return;
     }
     
-    rtcEngine = createAgoraRtcEngine(sharedNativeHandle: Settings.appID);
+    rtcEngine = createAgoraRtcEngine();
     await rtcEngine.enableVideo();
     await rtcEngine.enableAudio();
     await rtcEngine.setChannelProfile(ChannelProfileType.channelProfileLiveBroadcasting);
-    await rtcEngine.setClientRole(role: widget.clientRole!);
+    await rtcEngine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
 
     addAgoraEventHandlers();
 
@@ -71,8 +71,10 @@ class VideoCallState extends State<VideoCallWidget>
     
     await rtcEngine.setVideoEncoderConfiguration(videoConfig);
     await rtcEngine.joinChannel(
-      token: Settings.token, channelId: widget.channelName!, uid: 0, options: ChannelMediaOptions());
-
+      token: Settings.token,
+      channelId: widget.channelName!,
+      uid: 0,
+      options: ChannelMediaOptions());
   }
 
   @override
@@ -111,7 +113,8 @@ class VideoCallState extends State<VideoCallWidget>
       onJoinChannelSuccess: (RtcConnection connection, int elapsed) 
       {
         print('Successfully joined the channel: ${connection.channelId}');
-        setState(() {
+        setState(() 
+        {
           final info ="channel joined";
           infoStrings.add(info);
         });
@@ -150,10 +153,7 @@ class VideoCallState extends State<VideoCallWidget>
   Widget viewRows()
   {
     final List<Widget> list = [];
-    if (widget.clientRole == ClientRoleType.clientRoleBroadcaster)
-    {
-      list.add(renderLocalPreview());
-    }
+    list.add(renderLocalPreview());
     list.addAll(users.map((uid) => renderRemotePreview(uid)));
     
     final views = list;
@@ -167,7 +167,6 @@ class VideoCallState extends State<VideoCallWidget>
 
   Widget toolBar()
   {
-    if(widget.clientRole==ClientRoleType.clientRoleAudience) return const SizedBox();
     return Container(
       alignment: Alignment.bottomCenter,
       padding: const EdgeInsets.symmetric(vertical: 48),

@@ -106,7 +106,6 @@ class IndexState extends State<IndexPage>
         context,
         MaterialPageRoute(builder: (context) => VideoCallWidget(
           channelName: channelController.text,
-          clientRole: clientRole,
         ))
       );
     }
