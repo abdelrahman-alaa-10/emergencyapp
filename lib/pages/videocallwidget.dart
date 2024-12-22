@@ -18,12 +18,11 @@ final logger = Logger(
 class VideoCallWidget extends StatefulWidget 
 {
   static const ClientRoleType clientRole = ClientRoleType.clientRoleBroadcaster;
-  final String? channelName;
+  static const String channelName = Settings.channelName;
   
   const VideoCallWidget(
     {
       super.key,
-      this.channelName,
     });
   
   @override
@@ -72,7 +71,7 @@ class VideoCallState extends State<VideoCallWidget>
     await rtcEngine.setVideoEncoderConfiguration(videoConfig);
     await rtcEngine.joinChannel(
       token: Settings.token,
-      channelId: widget.channelName!,
+      channelId: Settings.channelName,
       uid: 0,
       options: ChannelMediaOptions());
   }

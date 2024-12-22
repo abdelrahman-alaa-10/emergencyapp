@@ -108,7 +108,7 @@ class DirectorPage extends StatelessWidget
                       // Navigate to Emergency page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => IndexPage()), // Fixed navigation
+                        MaterialPageRoute(builder: (context) => VideoCallWidget()), // Fixed navigation
                       );
                     },
                     style: ElevatedButton.styleFrom(
