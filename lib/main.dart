@@ -3,7 +3,8 @@ import 'pages/signIn.dart';  // Correct import for SignInPage
 import 'pages/signUp.dart';  // Correct import for SignUpPage
 import 'pages/callPage.dart';  // Correct import for CallPage
 import 'routes.dart';
-import 'pages/videocall.dart';
+import 'pages/videocallwidget.dart';
+import 'pages/videocallindex.dart';
 
 
 void main() {
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget
     home: const HomeScreen(),
     routes:
     {
-      Routes.videoCallRoute: (context) => const VideoCall(),
+      Routes.videoCallRoute: (context) => const IndexPage(),
     }
     );
   }
