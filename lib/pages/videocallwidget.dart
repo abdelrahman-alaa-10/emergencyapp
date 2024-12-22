@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import '../credentials.dart';
 import 'package:logger/logger.dart';
 import '../logoutput.dart';
 import 'dart:io';

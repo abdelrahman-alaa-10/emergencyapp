@@ -78,7 +78,7 @@ flutter:
     - lib/pages/assets/images/choking/5.png
     - lib/pages/assets/images/burn/1.png
     - lib/pages/assets/images/burn/2.png
-    - lib/pages/assets/images/relaxing_page.png
+    - lib\pages\assets\images\icons\heart.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

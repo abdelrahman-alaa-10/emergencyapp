@@ -1,7 +1,6 @@
 import 'package:emergencyapp/pages/instruction_call_page.dart';
 import 'package:flutter/material.dart';
-
-import 'callPage.dart';
+import 'videocallindex.dart';
 
 class UserPage extends StatelessWidget {
   final String userName;
@@ -88,7 +87,7 @@ class UserPage extends StatelessWidget {
                       // Navigate to Emergency page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Callpage()), // Fixed navigation
+                        MaterialPageRoute(builder: (context) => IndexPage()), // Fixed navigation
                       );
                     },
                     style: ElevatedButton.styleFrom(

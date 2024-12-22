@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'videocallwidget.dart';
-import '../images.dart';
 
 class IndexPage extends StatefulWidget
 {
@@ -40,7 +39,7 @@ class IndexState extends State<IndexPage>
           child: Column(
             children: <Widget>[
               const SizedBox(height: 40),
-              Image.network(Images.relaxingImage),
+              Image.network("C:\\Users\\moham\\OneDrive\\Desktop\\Boda\\CUFE\\SBE_3\\Projects\\AT\\emergencyapp\\lib\\pages\\assets\\images\\icons\\heart.png"),
               const SizedBox(height: 20),
               TextField(
                 controller: channelController,
@@ -74,12 +73,11 @@ class IndexState extends State<IndexPage>
                 groupValue: clientRole,
               ),
               ElevatedButton(
-                onPressed: onJoin, 
-                child: const Text("Join"),
+                onPressed: onJoin,
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 40),
-
                 ),
+                child: const Text("Join"),
               )
             ],
           ),
@@ -100,6 +98,9 @@ class IndexState extends State<IndexPage>
     {
       await handleCameraAndMic(Permission.camera);
       await handleCameraAndMic(Permission.microphone);
+      
+      if(!mounted) return;
+      
       await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => VideoCallWidget(
