@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.5.4
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -40,6 +40,8 @@ dependencies:
   iris_method_channel: ^2.2.2
   path_provider: ^2.1.5
   permission_handler: ^11.3.1
+  supabase_flutter: ^2.8.2
+  file_picker: ^8.1.6
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +67,19 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/relaxing_image.jpg
+    - lib/pages/assets/images/heart/1.jpeg
+    - lib/pages/assets/images/heart/2.png
+    - lib/pages/assets/images/stroke/1.jpg
+    - lib/pages/assets/images/stroke/2.png
+    - lib/pages/assets/images/choking/1.jpeg
+    - lib/pages/assets/images/choking/2.png
+    - lib/pages/assets/images/choking/3.png
+    - lib/pages/assets/images/choking/4.png
+    - lib/pages/assets/images/choking/5.png
+    - lib/pages/assets/images/burn/1.png
+    - lib/pages/assets/images/burn/2.png
+    - lib/pages/assets/images/relaxing_page.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
